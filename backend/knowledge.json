@@ -1,0 +1,38 @@
+[
+  {
+    "test": "Hemoglobin",
+    "source_name": "MedlinePlus: Hemoglobin Test",
+    "source_url": "https://medlineplus.gov/lab-tests/hemoglobin-test/",
+    "text": "Hemoglobin is the protein in red blood cells that carries oxygen around the body. A low level is common with iron deficiency, blood loss, low vitamin B12 or folate, pregnancy, and some long-term illnesses. It can cause tiredness, pale skin and breathlessness. A high level can happen with dehydration, living at high altitude, smoking, or lung problems. Iron-rich foods such as leafy greens, beans, lentils, eggs and meat, eaten with a vitamin C source, support healthy levels. A doctor decides what tests or treatment are needed."
+  },
+  {
+    "test": "WBC Count",
+    "source_name": "MedlinePlus: Complete Blood Count (CBC)",
+    "source_url": "https://medlineplus.gov/lab-tests/complete-blood-count-cbc/",
+    "text": "White blood cells (WBC) are part of the immune system and help the body fight infection. A high count is often seen with infections, inflammation, physical or emotional stress, smoking, and some medicines. A low count can happen with some viral infections, certain medicines, and conditions affecting the bone marrow or immune system. A single abnormal value is often temporary, so doctors usually look at the full picture and may repeat the test."
+  },
+  {
+    "test": "RBC Count",
+    "source_name": "MedlinePlus: Complete Blood Count (CBC)",
+    "source_url": "https://medlineplus.gov/lab-tests/complete-blood-count-cbc/",
+    "text": "Red blood cells (RBC) carry oxygen from the lungs to the rest of the body. The RBC count is usually read together with hemoglobin. A low count can go along with anemia, which has many causes such as low iron, vitamin deficiencies or blood loss. A high count can be linked to dehydration, smoking, high altitude, or lung and heart conditions."
+  },
+  {
+    "test": "Platelet Count",
+    "source_name": "MedlinePlus: Complete Blood Count (CBC)",
+    "source_url": "https://medlineplus.gov/lab-tests/complete-blood-count-cbc/",
+    "text": "Platelets are small blood cells that help the blood clot and stop bleeding. A low count can be caused by viral infections, some medicines, liver conditions, or immune problems, and may lead to easy bruising or bleeding. A high count can occur with infection, inflammation, or low iron. Any marked change should be reviewed by a doctor."
+  },
+  {
+    "test": "Fasting Glucose",
+    "source_name": "MedlinePlus: Blood Glucose Test",
+    "source_url": "https://medlineplus.gov/lab-tests/blood-glucose-test/",
+    "text": "Fasting glucose measures the sugar in the blood after at least 8 hours without food. Doctors commonly consider below 100 mg/dL normal, 100 to 125 mg/dL a range that needs attention because it can mean a higher risk of diabetes, and 126 mg/dL or more on repeated tests a range linked to diabetes. Only a doctor can diagnose diabetes, usually after repeating the test or adding others. A balanced diet, fewer sugary drinks, regular physical activity, healthy weight and enough sleep all help keep blood sugar in a healthy range."
+  },
+  {
+    "test": "Total Cholesterol",
+    "source_name": "MedlinePlus: Cholesterol Levels",
+    "source_url": "https://medlineplus.gov/lab-tests/cholesterol-levels/",
+    "text": "Total cholesterol measures all the cholesterol in the blood. A level under 200 mg/dL is generally considered desirable. Higher levels can be linked to a diet high in saturated and fried foods, little physical activity, extra weight, and family history. Eating more fiber (oats, fruits, vegetables, pulses), cutting back on fried and processed foods, staying active and not smoking can help. A doctor looks at total cholesterol together with LDL, HDL and triglycerides."
+  }
+]

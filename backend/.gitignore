@@ -1,0 +1,35 @@
+.env
+venv/
+uploads/
+__pycache__/
+kb/
+medreport.db
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Secrets and environment settings
+.env
+.env.*
+*.key
+*.pem
+
+# User-uploaded medical reports and outputs
+uploads/
+reports/
+output/
+*.pdf
+*.docx
+*.png
+*.jpg
+*.jpeg
+
+# Editor/system files
+.vscode/
+.DS_Store

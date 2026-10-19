@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedReport Explainer</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--primary:#2563eb;--green:#16a34a;--amber:#d97706;--red:#dc2626;--border:#e5e7eb}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+header{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;text-align:center;padding:30px 16px 24px}
+header h1{margin:0 0 6px;font-size:28px}
+header p{margin:0;opacity:.9}
+.steps{display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.step{padding:6px 14px;border-radius:20px;background:rgba(255,255,255,.18);font-size:14px}
+.step.active{background:#fff;color:var(--primary);font-weight:600}
+.step.done{background:rgba(255,255,255,.4)}
+main{max-width:860px;margin:22px auto;padding:0 16px}
+.card{background:var(--card);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.hidden{display:none!important}
+.disclaimer{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:10px;padding:10px 14px;font-size:14px;margin-bottom:18px}
+.drop{border:2px dashed #93c5fd;border-radius:14px;padding:40px 16px;text-align:center;cursor:pointer;background:#f8fbff}
+.drop.over{background:#e0efff}
+.drop .big{font-size:42px}
+button{background:var(--primary);color:#fff;border:0;border-radius:10px;padding:11px 20px;font-size:16px;cursor:pointer}
+button:hover{opacity:.92}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button.danger{background:#fee2e2;color:var(--red)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--border);font-size:15px;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:13px}
+td input{width:110px;padding:6px 8px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
+tr.flagged td{background:#fffbeb}
+.warn{display:block;margin-top:4px;font-size:13px;color:#92400e}
+.badge{padding:3px 10px;border-radius:12px;font-size:13px;font-weight:600;white-space:nowrap}
+.b-normal{background:#dcfce7;color:var(--green)}
+.b-low,.b-high{background:#fef3c7;color:var(--amber)}
+.b-critical_low,.b-critical_high{background:#fee2e2;color:var(--red)}
+.x{background:none;color:var(--muted);padding:2px 8px;font-size:18px}
+.group{border-left:5px solid;border-radius:10px;padding:6px 16px 10px;margin:16px 0;background:#fafafa}
+.group.green{border-color:var(--green)}.group.amber{border-color:var(--amber)}.group.red{border-color:var(--red);background:#fef2f2}
+.group h3{margin:10px 0 6px}
+.item{padding:8px 0;border-top:1px solid var(--border)}
+.item:first-of-type{border-top:0}
+.item p{margin:4px 0;font-size:15px}
+.val{margin-left:10px;color:var(--muted);font-size:14px}
+.summary{font-size:17px}
+#messages{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.msg{padding:10px 14px;border-radius:14px;max-width:85%;white-space:pre-wrap;font-size:15px}
+.msg.user{background:var(--primary);color:#fff;align-self:flex-end}
+.msg.bot{background:#eef2f7;align-self:flex-start}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chip{background:#eef2ff;color:#3730a3;border-radius:16px;padding:6px 12px;font-size:14px;cursor:pointer;border:0}
+.ask{display:flex;gap:8px}
+.ask input{flex:1;padding:11px 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px}
+.error{background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:16px}
+.notice{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:10px 14px;border-radius:10px;margin:12px 0;font-size:14px}
+.spinner{text-align:center;padding:30px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 30px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🩺 MedReport Explainer</h1>
+  <p>Understand your medical report in simple language</p>
+  <div class="steps">
+    <span class="step active">1. Upload</span>
+    <span class="step">2. Check values</span>
+    <span class="step">3. Understand &amp; ask</span>
+  </div>
+</header>
+
+<main>
+  <div class="disclaimer">⚠️ This tool explains reports in simple words. It does not diagnose diseases or recommend medicines. Always talk to your doctor about your results.</div>
+  <div id="error" class="error hidden"></div>
+  <div id="loading" class="card spinner hidden"></div>
+
+  <section id="stepUpload" class="card">
+    <div id="drop" class="drop">
+      <div class="big">📄</div>
+      <p><strong>Click here or drag your report</strong></p>
+      <p style="color:var(--muted);margin:0">PDF, JPG or PNG, up to 10 MB</p>
+    </div>
+    <input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg" class="hidden">
+  </section>
+
+  <section id="stepReview" class="card hidden">
+    <h2 style="margin-top:0">Please check these values</h2>
+    <p style="color:var(--muted)">We read these from your report. If anything is wrong, fix the number or remove the row.</p>
+    <div id="reviewNotice" class="notice hidden"></div>
+    <table>
+      <thead><tr><th>Test</th><th>Your value</th><th>Normal range</th><th>Status</th><th></th></tr></thead>
+      <tbody id="reviewBody"></tbody>
+    </table>
+    <div class="row">
+      <button id="confirmBtn">Looks correct, explain it</button>
+      <button id="again1" class="secondary">Upload a different file</button>
+    </div>
+  </section>
+
+  <section id="stepResults" class="hidden">
+    <div class="card"><div id="results"></div></div>
+    <div class="card">
+      <h2 style="margin-top:0">💬 Ask about your report</h2>
+      <div class="chips" id="chips"></div>
+      <div id="messages"></div>
+      <div class="ask">
+        <input id="question" placeholder="Type your question here..." maxlength="500">
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:18px">
+      <button id="again2" class="secondary">Start a new report</button>
+      <button id="deleteBtn" class="danger">Delete my report data</button>
+    </div>
+  </section>
+</main>
+<footer>Final Year Project · Educational use only · Not a substitute for medical advice</footer>
+
+<script>
+let reportId = null, tests = [];
+const $ = id => document.getElementById(id);
+const JSON_HEADERS = {"Content-Type": "application/json"};
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+function show(id, on = true){ $(id).classList.toggle("hidden", !on); }
+function setStep(n){
+  document.querySelectorAll(".step").forEach((s, i) => {
+    s.classList.toggle("active", i + 1 === n);
+    s.classList.toggle("done", i + 1 < n);
+  });
+}
+function showError(msg){ $("error").textContent = msg; show("error"); window.scrollTo({top: 0, behavior: "smooth"}); }
+function hideError(){ show("error", false); }
+function busy(msg){ if (msg){ $("loading").textContent = "⏳ " + msg; } show("loading", !!msg); }
+
+async function api(url, opts){
+  const res = await fetch(url, opts);
+  let data = null;
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok){
+    if (res.status === 404) throw new Error("Your session expired. Please upload the report again.");
+    let msg = data && data.detail;
+    if (Array.isArray(msg)) msg = "Something was not filled in correctly.";
+    throw new Error(msg || "Something went wrong (" + res.status + ").");
+  }
+  return data;
+}
+
+function fmtRange(t){
+  if (t.ref_low != null && t.ref_high != null) return t.ref_low + " – " + t.ref_high;
+  if (t.ref_high != null) return "below " + t.ref_high;
+  if (t.ref_low != null) return "above " + t.ref_low;
+  return "—";
+}
+function liveStatus(v, t){
+  if (t.ref_low != null && v < t.ref_low) return v < t.ref_low * 0.7 ? "critical_low" : "low";
+  if (t.ref_high != null && v > t.ref_high) return v > t.ref_high * 1.5 ? "critical_high" : "high";
+  return "normal";
+}
+const LABELS = {normal: "Normal", low: "Low", high: "High", critical_low: "Very low", critical_high: "Very high"};
+
+function renderReview(){
+  const body = $("reviewBody");
+  body.innerHTML = "";
+  const flagged = tests.filter(t => t.warning).length;
+  const notice = $("reviewNotice");
+  if (flagged){
+    notice.textContent = "⚠️ " + flagged + (flagged === 1 ? " row needs" : " rows need") + " a quick look (highlighted below). Photos can be misread, so please compare these with your report.";
+    show("reviewNotice");
+  } else {
+    show("reviewNotice", false);
+  }
+  if (!tests.length){
+    const tr = el("tr"), td = el("td", null, "We could not find any test values in this file. Please try a clearer PDF or photo.");
+    td.colSpan = 5; tr.appendChild(td); body.appendChild(tr);
+    $("confirmBtn").classList.add("hidden");
+    return;
+  }
+  $("confirmBtn").classList.remove("hidden");
+  tests.forEach((t, i) => {
+    const tr = el("tr");
+    if (t.warning) tr.classList.add("flagged");
+    const tdName = el("td", null, t.test);
+    let warnEl = null;
+    if (t.warning){
+      warnEl = el("span", "warn", "⚠️ " + t.warning);
+      tdName.appendChild(warnEl);
+    }
+    tr.appendChild(tdName);
+    const tdV = el("td");
+    const input = el("input");
+    input.type = "number"; input.step = "any"; input.value = t.value;
+    const unit = el("span", "val", t.unit);
+    const badge = el("span", "badge b-" + t.status, LABELS[t.status]);
+    input.addEventListener("input", () => {
+      t.value = input.value;
+      const v = Number(input.value);
+      if (input.value.trim() !== "" && !Number.isNaN(v)){
+        t.status = liveStatus(v, t);
+        badge.className = "badge b-" + t.status;
+        badge.textContent = LABELS[t.status];
+      }
+      // The person has looked at this row and corrected it, so clear the warning
+      if (warnEl){ warnEl.remove(); warnEl = null; tr.classList.remove("flagged"); t.warning = null; }
+    });
+    tdV.appendChild(input); tdV.appendChild(unit); tr.appendChild(tdV);
+    tr.appendChild(el("td", null, fmtRange(t)));
+    const tdS = el("td"); tdS.appendChild(badge); tr.appendChild(tdS);
+    const tdX = el("td"), x = el("button", "x", "✕");
+    x.title = "Remove this row";
+    x.addEventListener("click", () => { tests.splice(i, 1); renderReview(); });
+    tdX.appendChild(x); tr.appendChild(tdX);
+    body.appendChild(tr);
+  });
+}
+
+async function handleFile(file){
+  if (!file) return;
+  hideError();
+  busy("Reading your report... this can take a few seconds for photos.");
+  const fd = new FormData();
+  fd.append("file", file);
+  try {
+    const data = await api("/upload", {method: "POST", body: fd});
+    reportId = data.report_id;
+    tests = data.tests;
+    renderReview();
+    show("stepUpload", false); show("stepReview"); setStep(2);
+  } catch (e) { showError(e.message); }
+  finally { busy(null); $("file").value = ""; }
+}
+
+async function confirmTests(){
+  hideError();
+  if (tests.some(t => String(t.value).trim() === "" || Number.isNaN(Number(t.value)))){
+    return showError("Please enter a number for every value, or remove the row.");
+  }
+  const payload = tests.map(t => ({test: t.test, value: Number(t.value), unit: t.unit, ref_low: t.ref_low, ref_high: t.ref_high}));
+  busy("Preparing your simple explanation...");
+  try {
+    const data = await api("/confirm/" + reportId, {method: "POST", headers: JSON_HEADERS, body: JSON.stringify({tests: payload})});
+    tests = data.tests;
+    renderResults(data.explanation);
+    show("stepReview", false); show("stepResults"); setStep(3);
+    renderChips();
+  } catch (e) { showError(e.message); }
+  finally { busy(null); }
+}
+
+function renderResults(ex){
+  const box = $("results");
+  box.innerHTML = "";
+  const byName = {};
+  tests.forEach(t => byName[t.test] = t);
+  box.appendChild(el("h2", null, "Your report in simple words"));
+  box.appendChild(el("p", "summary", ex.summary || ""));
+  const groups = [
+    ["attention", "⚠️ Needs special attention", "red"],
+    ["high", "⬆️ Higher than normal", "amber"],
+    ["low", "⬇️ Lower than normal", "amber"],
+    ["normal", "✅ Looking good", "green"]
+  ];
+  const prefix = {meaning: "", what_it_may_mean: "What it may mean: ", why: "Why: "};
+  groups.forEach(([key, title, color]) => {
+    const items = ex[key] || [];
+    if (!items.length) return;
+    const sec = el("div", "group " + color);
+    sec.appendChild(el("h3", null, title));
+    items.forEach(it => {
+      const c = el("div", "item"), head = el("div");
+      head.appendChild(el("strong", null, it.test));
+      const t = byName[it.test];
+      if (t) head.appendChild(el("span", "val", t.value + " " + t.unit + " (normal: " + fmtRange(t) + ")"));
+      c.appendChild(head);
+      Object.keys(prefix).forEach(k => { if (it[k]) c.appendChild(el("p", null, prefix[k] + it[k])); });
+      sec.appendChild(c);
+    });
+    box.appendChild(sec);
+  });
+  if (!(ex.attention || []).length){
+    box.appendChild(el("p", "val", "No urgent items were flagged. Still, please share these results with your doctor."));
+  }
+}
+
+function renderChips(){
+  const chips = $("chips");
+  chips.innerHTML = "";
+  ["What does this report mean overall?", "What can I do to improve my low values?", "Should I be worried?"].forEach(q => {
+    const c = el("button", "chip", q);
+    c.addEventListener("click", () => sendQuestion(q));
+    chips.appendChild(c);
+  });
+}
+
+function addMsg(who, text){
+  const m = el("div", "msg " + who, text);
+  $("messages").appendChild(m);
+  $("messages").scrollTop = $("messages").scrollHeight;
+  return m;
+}
+
+async function sendQuestion(q){
+  q = (q || $("question").value).trim();
+  if (!q) return;
+  $("question").value = "";
+  addMsg("user", q);
+  const typing = addMsg("bot", "Thinking...");
+  try {
+    const data = await api("/chat", {method: "POST", headers: JSON_HEADERS, body: JSON.stringify({report_id: reportId, question: q})});
+    typing.textContent = data.answer.replace(/\*/g, "");
+    if (data.sources && data.sources.length){
+      const box = el("div", null);
+      box.style.cssText = "margin-top:8px;font-size:13px;color:#6b7280";
+      box.appendChild(document.createTextNode("Sources: "));
+      data.sources.forEach((s, i) => {
+        if (!/^https:\/\//.test(s.url)) return;
+        const a = el("a", null, s.name);
+        a.href = s.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        if (i) box.appendChild(document.createTextNode(" · "));
+        box.appendChild(a);
+      });
+      typing.appendChild(box);
+    }
+  } catch (e) { typing.textContent = "Sorry, " + e.message; }
+  $("messages").scrollTop = $("messages").scrollHeight;
+}
+
+function resetAll(){
+  reportId = null; tests = [];
+  $("messages").innerHTML = ""; $("results").innerHTML = "";
+  hideError();
+  show("stepResults", false); show("stepReview", false); show("stepUpload");
+  setStep(1);
+}
+
+async function deleteData(){
+  if (!confirm("Delete this report and your chat from the server?")) return;
+  try { await api("/report/" + reportId, {method: "DELETE"}); } catch (e) {}
+  resetAll();
+}
+
+$("drop").addEventListener("click", () => $("file").click());
+$("file").addEventListener("change", e => handleFile(e.target.files[0]));
+$("drop").addEventListener("dragover", e => { e.preventDefault(); $("drop").classList.add("over"); });
+$("drop").addEventListener("dragleave", () => $("drop").classList.remove("over"));
+$("drop").addEventListener("drop", e => { e.preventDefault(); $("drop").classList.remove("over"); handleFile(e.dataTransfer.files[0]); });
+$("confirmBtn").addEventListener("click", confirmTests);
+$("again1").addEventListener("click", resetAll);
+$("again2").addEventListener("click", resetAll);
+$("deleteBtn").addEventListener("click", deleteData);
+$("sendBtn").addEventListener("click", () => sendQuestion());
+$("question").addEventListener("keydown", e => { if (e.key === "Enter") sendQuestion(); });
+</script>
+</body>
+</html>

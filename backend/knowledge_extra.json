@@ -1,0 +1,74 @@
+[
+  {
+    "test": "TSH",
+    "source_name": "MedlinePlus: TSH Test",
+    "source_url": "https://medlineplus.gov/lab-tests/tsh-thyroid-stimulating-hormone-test/",
+    "text": "TSH (thyroid-stimulating hormone) is made by the pituitary gland and tells the thyroid how much hormone to produce. A high TSH often points to an underactive thyroid, and a low TSH can point to an overactive thyroid. Symptoms of an underactive thyroid can include tiredness, weight gain and feeling cold, while an overactive thyroid can cause a fast heartbeat, weight loss and feeling hot. Normal ranges differ between labs, and a doctor usually checks other thyroid hormones before deciding what it means."
+  },
+  {
+    "test": "Vitamin D",
+    "source_name": "MedlinePlus: Vitamin D Test",
+    "source_url": "https://medlineplus.gov/lab-tests/vitamin-d-test/",
+    "text": "Vitamin D helps the body absorb calcium and keeps bones and muscles strong. Low levels are common and can result from little sun exposure, darker skin, older age, or certain digestive conditions. Long-term low levels can weaken bones. Safe sun exposure and foods such as fortified milk, eggs and fatty fish contribute to vitamin D. Whether a supplement is needed, and how much, must be decided by a doctor, because too much vitamin D can also be harmful."
+  },
+  {
+    "test": "Vitamin B12",
+    "source_name": "MedlinePlus: Vitamin B12 Level",
+    "source_url": "https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/query-meta?v%3Aproject=medlineplus&v%3Asources=medlineplus-bundle&query=vitamin+b12&_gl=1*17lomj7*_ga*MjA4NTg2NTcyMi4xNzkyMzQ0NDA4*_ga_7147EPK006*czE3OTIzNDQ0MDgkbzEkZzEkdDE3OTIzNDQ1NzgkajE3JGwwJGgw*_ga_P1FPTH9PL4*czE3OTIzNDQ0MDgkbzEkZzEkdDE3OTIzNDQ1MzUkajYwJGwwJGgw&_ga=2.148339511.1834918379.1792344408-2085865722.1792344408",
+    "text": "Vitamin B12 is needed for healthy nerves and for making red blood cells. Low levels can be caused by a diet with few animal foods (common in vegetarians), problems absorbing B12 from the gut, or some long-term medicines. Signs can include tiredness, tingling in the hands and feet, and a sore tongue. B12 is found in milk, curd, eggs, fish and meat. A doctor decides how to correct a low level."
+  },
+  {
+    "test": "HbA1c",
+    "source_name": "MedlinePlus: Hemoglobin A1c (HbA1c) Test",
+    "source_url": "https://medlineplus.gov/lab-tests/hemoglobin-a1c-hba1c-test/",
+    "text": "HbA1c shows the average blood sugar over the past 2 to 3 months. Doctors commonly consider below 5.7 percent normal, 5.7 to 6.4 percent a range called prediabetes, and 6.5 percent or higher on repeated tests a range linked to diabetes. Only a doctor can diagnose diabetes. A balanced diet, regular physical activity, a healthy weight and enough sleep help keep HbA1c in a healthy range."
+  },
+  {
+    "test": "LDL Cholesterol",
+    "source_name": "MedlinePlus: Cholesterol Levels",
+    "source_url": "https://medlineplus.gov/lab-tests/cholesterol-levels/",
+    "text": "LDL is often called the bad cholesterol because high levels can build up in blood vessel walls and raise the risk of heart disease over time. Lower LDL is generally better. Eating less fried food and saturated fat, eating more fiber, staying active, keeping a healthy weight and not smoking all help. A doctor sets a personal LDL target based on overall heart risk."
+  },
+  {
+    "test": "HDL Cholesterol",
+    "source_name": "MedlinePlus: Cholesterol Levels",
+    "source_url": "https://medlineplus.gov/lab-tests/cholesterol-levels/",
+    "text": "HDL is often called the good cholesterol because it helps carry extra cholesterol away from the blood vessels. For HDL, higher is generally better. Regular exercise, not smoking, and healthy fats such as those in nuts, seeds and fish can help raise it."
+  },
+  {
+    "test": "Triglycerides",
+    "source_name": "MedlinePlus: Triglycerides Test",
+    "source_url": "https://medlineplus.gov/lab-tests/triglycerides-test/",
+    "text": "Triglycerides are a type of fat in the blood that the body makes from extra calories, especially from sugar and alcohol. High levels are linked with extra weight, sugary foods and drinks, alcohol, low physical activity and diabetes, and very high levels can irritate the pancreas. Cutting sweets, sugary drinks and alcohol, eating less refined food, and exercising regularly usually help. A doctor interprets the result along with the other cholesterol values."
+  },
+  {
+    "test": "Creatinine",
+    "source_name": "MedlinePlus: Creatinine Test",
+    "source_url": "https://medlineplus.gov/lab-tests/creatinine-test/",
+    "text": "Creatinine is a waste product from muscles that the kidneys filter out of the blood. A higher level can mean the kidneys are not filtering as well as they should, but it can also rise with dehydration, a high-meat meal, intense exercise, or some medicines. Normal values depend on age, sex and muscle mass. A doctor usually repeats the test and may add a kidney function calculation."
+  },
+  {
+    "test": "Blood Urea",
+    "source_name": "MedlinePlus: BUN (Blood Urea Nitrogen) Test",
+    "source_url": "https://medlineplus.gov/lab-tests/bun-blood-urea-nitrogen/",
+    "text": "Urea is a waste product made when the body breaks down protein, and the kidneys remove it from the blood. A high level can come from dehydration, a high-protein diet, or reduced kidney function. A low level is less common and can be linked to a very low-protein diet or liver problems. Doctors read urea together with creatinine."
+  },
+  {
+    "test": "Uric Acid",
+    "source_name": "MedlinePlus: Uric Acid Test",
+    "source_url": "https://medlineplus.gov/lab-tests/uric-acid-test/",
+    "text": "Uric acid is a waste product formed when the body breaks down purines found in some foods. High levels can lead to gout, which causes painful swollen joints, and to kidney stones. Drinking plenty of water, limiting alcohol, sugary drinks, red meat and organ meats, and keeping a healthy weight can help. A doctor decides whether any treatment is needed."
+  },
+  {
+    "test": "ALT (SGPT)",
+    "source_name": "MedlinePlus: ALT Blood Test",
+    "source_url": "https://medlineplus.gov/lab-tests/alt-blood-test/",
+    "text": "ALT (also called SGPT) is an enzyme found mostly in the liver and is released into the blood when liver cells are irritated or damaged. Mildly raised levels are common with fatty liver, alcohol use, some medicines, and viral hepatitis. Keeping a healthy weight, avoiding alcohol and being careful with medicines supports liver health. A doctor may repeat the test and add others to find the cause."
+  },
+  {
+    "test": "AST (SGOT)",
+    "source_name": "MedlinePlus: AST Test",
+    "source_url": "https://medlineplus.gov/lab-tests/ast-test/",
+    "text": "AST (also called SGOT) is an enzyme found in the liver and also in muscles and the heart. Raised levels can come from liver problems, but also from strenuous exercise or muscle injury, so doctors read AST together with ALT. Fatty liver, alcohol and some medicines are common causes of a mild rise. A doctor decides which follow-up tests are needed."
+  }
+]
