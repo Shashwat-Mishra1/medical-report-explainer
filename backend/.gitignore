@@ -4,6 +4,8 @@ uploads/
 __pycache__/
 kb/
 medreport.db
+eval_results/
+
 
 # Python
 __pycache__/

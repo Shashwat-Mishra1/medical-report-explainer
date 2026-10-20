@@ -120,11 +120,65 @@ def get_status(value, low, high):
     return "normal"
 
 
+# Typical lower / upper limits of each test's normal range. Only used to notice a range whose
+# decimal point was lost by OCR (4.5-5.9 read as 45-59). Bands are deliberately wide.
+BANDS = {
+    "Hemoglobin": {"low": (10, 15), "high": (14, 18.5)},
+    "WBC Count": {"low": (3000, 5000), "high": (10000, 12000)},
+    "RBC Count": {"low": (3.5, 5.0), "high": (5.0, 6.5)},
+    "Platelet Count": {"low": (100000, 200000), "high": (350000, 500000)},
+    "Fasting Glucose": {"low": (60, 80), "high": (95, 126)},
+    "HbA1c": {"low": (3.5, 4.6), "high": (5.5, 6.5)},
+    "Total Cholesterol": {"high": (170, 240)},
+    "LDL Cholesterol": {"high": (70, 160)},
+    "HDL Cholesterol": {"low": (35, 60)},
+    "Triglycerides": {"high": (130, 200)},
+    "TSH": {"low": (0.2, 0.6), "high": (3.5, 6.0)},
+    "Vitamin D": {"low": (20, 40), "high": (80, 120)},
+    "Vitamin B12": {"low": (150, 300), "high": (800, 1200)},
+    "Creatinine": {"low": (0.4, 0.8), "high": (1.0, 1.5)},
+    "Blood Urea": {"low": (10, 20), "high": (35, 50)},
+    "Uric Acid": {"low": (2.0, 4.0), "high": (5.5, 8.0)},
+    "ALT (SGPT)": {"low": (5, 15), "high": (35, 60)},
+    "AST (SGOT)": {"low": (5, 15), "high": (30, 50)},
+}
+
+
+def repair_bound(canon: str, which: str, x):
+    """If x is outside its usual band but x/10 or x/100 is inside, the decimal point was probably lost."""
+    band = BANDS.get(canon, {}).get(which)
+    if x is None or band is None or band[0] <= x <= band[1]:
+        return x, False
+    for div in (10, 100):
+        y = x / div
+        if band[0] <= y <= band[1]:
+            return round(y, 2), True
+    return x, False
+
+
+def fmt_bound(x) -> str:
+    return f"{x:g}"
+
+
+def show_range(low, high) -> str:
+    if low is not None and high is not None:
+        return f"{low:g}-{high:g}"
+    return f"below {high:g}" if high is not None else f"above {low:g}"
+
+
 def make_test(name, value, unit, rng):
     low, high = rng
     v = to_float(value)
     canon, name_note = resolve_name(name)
-    parts = [p for p in (name_note, plausibility_warning(v, low, high)) if p]
+    notes = [name_note]
+    new_low, fixed_low = repair_bound(canon, "low", low)
+    new_high, fixed_high = repair_bound(canon, "high", high)
+    if fixed_low or fixed_high:
+        notes.append(f"The normal range looked misread ({show_range(low, high)}) "
+                     f"and was corrected to {show_range(new_low, new_high)}.")
+        low, high = new_low, new_high
+    notes.append(plausibility_warning(v, low, high))
+    parts = [p for p in notes if p]
     return {
         "test": canon,
         "value": v,
@@ -136,8 +190,10 @@ def make_test(name, value, unit, rng):
     }
 
 
+FLAGS = {"h", "l", "hh", "ll", "high", "low", "h*", "l*", "*", "↑", "↓"}
 ONE_LINE = re.compile(
-    rf"^(?P<name>[A-Za-z][A-Za-z0-9 .()/%,-]*?)\s+(?P<value>{NUM})\s+(?P<unit>\S+)\s+(?P<range>.+)$"
+    rf"^(?P<name>[A-Za-z][A-Za-z0-9 .()/%,-]*?)\s+(?P<value>{NUM})(?:\s+(?:H|L|HH|LL|High|Low|\*|↑|↓))?"
+    rf"\s+(?P<unit>\S+)\s+(?P<range>.+)$"
 )
 
 
@@ -150,6 +206,17 @@ def parse_report(text: str) -> list[dict]:
             tests.append(make_test(m["name"], m["value"], m["unit"], parse_range(m["range"])))
             i += 1
             continue
+        # Format B2: like B, with an extra H / L flag line after the value
+        if i + 4 < len(lines):
+            name, val, flag, unit, rng = lines[i : i + 5]
+            if (
+                is_number(val) and not is_number(name) and flag.lower() in FLAGS
+                and parse_range(rng) and not parse_range(name)
+            ):
+                tests.append(make_test(name, val, unit, parse_range(rng)))
+                i += 5
+                continue
+        # Format B: name / value / unit / range on four separate lines (text PDFs)
         if i + 3 < len(lines):
             name, val, unit, rng = lines[i : i + 4]
             if (

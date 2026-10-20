@@ -29,6 +29,41 @@ def _remove_table_lines(binary_inv: np.ndarray) -> np.ndarray:
     return cv2.bitwise_and(binary_inv, cv2.bitwise_not(lines))
 
 
+def _flatten_lighting(gray: np.ndarray) -> np.ndarray:
+    """Removes shadows and uneven lighting: estimate the paper colour (text removed, then blurred)
+    and divide the image by it, so the paper becomes evenly white."""
+    background = cv2.dilate(gray, cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25)))
+    background = cv2.GaussianBlur(background, (0, 0), 25)
+    return cv2.divide(gray, background, scale=255)
+
+
+def _estimate_skew(gray: np.ndarray) -> float:
+    """Angle (degrees) that straightens a tilted page. Text lines line up best when the
+    rows of the page have the most uneven ink counts, so we try angles and keep the best."""
+    h, w = gray.shape
+    scale = 700 / w
+    small = cv2.resize(gray, (700, max(1, int(h * scale))), interpolation=cv2.INTER_AREA)
+    _, inv = cv2.threshold(small, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    sh, sw = inv.shape
+
+    def score(angle: float) -> float:
+        m = cv2.getRotationMatrix2D((sw / 2, sh / 2), angle, 1.0)
+        rotated = cv2.warpAffine(inv, m, (sw, sh))
+        return float(np.var(rotated.sum(axis=1, dtype=np.float64)))
+
+    best = max(np.arange(-6.0, 6.01, 0.5), key=score)
+    return float(max(np.arange(best - 0.5, best + 0.51, 0.1), key=score))
+
+
+def _deskew(gray: np.ndarray) -> np.ndarray:
+    angle = _estimate_skew(gray)
+    if abs(angle) < 0.3:
+        return gray
+    h, w = gray.shape
+    m = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
+    return cv2.warpAffine(gray, m, (w, h), flags=cv2.INTER_CUBIC, borderValue=255)
+
+
 def preprocess_image(img: np.ndarray) -> np.ndarray:
     """Clean an image so Tesseract reads it more accurately."""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if img.ndim == 3 else img
@@ -36,6 +71,8 @@ def preprocess_image(img: np.ndarray) -> np.ndarray:
     if width < 2000:  # Tesseract works best on large, clear text
         scale = 2000 / width
         gray = cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+    gray = _flatten_lighting(gray)
+    gray = _deskew(gray)
     _, inv = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     return cv2.bitwise_not(_remove_table_lines(inv))
 
