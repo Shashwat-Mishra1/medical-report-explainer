@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedReport Explainer</title>
+<meta name="description" content="Upload a lab report and read it in plain words. Then ask questions about your own results.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b5d63'/%3E%3Crect x='6' y='14' width='20' height='4' rx='2' fill='%23fff' opacity='.55'/%3E%3Ccircle cx='20' cy='16' r='5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="MedReport Explainer, start over">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="currentColor"/>
+        <rect x="6" y="14" width="20" height="4" rx="2" fill="#fff" opacity=".55"/>
+        <circle cx="20" cy="16" r="5" fill="#fff"/>
+      </svg>
+      <span>MedReport Explainer</span>
+    </a>
+    <ol class="steps" aria-label="Progress">
+      <li class="step" data-step="1" aria-current="step"><span class="n">1</span>Upload</li>
+      <li class="step" data-step="2"><span class="n">2</span>Check values</li>
+      <li class="step" data-step="3"><span class="n">3</span>Your results</li>
+    </ol>
+  </div>
+  <p class="notice-bar">This tool explains reports in simple words. It does not diagnose or suggest medicines. Please talk to your doctor about your results.</p>
+</header>
+
+<main class="shell">
+  <div id="error" class="error hidden" role="alert"></div>
+
+  <div id="loading" class="loading hidden" role="status" aria-live="polite">
+    <span class="spin" aria-hidden="true"></span>
+    <span id="loadingText"></span>
+  </div>
+
+  <!-- Step 1: upload -->
+  <section id="stepUpload" class="upload">
+    <div class="upload-copy">
+      <h1>Your lab report, in plain words.</h1>
+      <p class="lead">Upload a PDF or a photo of your report. See what is normal, what is low or high, and what needs attention. Then ask questions about your own results.</p>
+
+      <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose a report file or drop it here">
+        <svg class="drop-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M14 6h14l10 10v24a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M28 6v10h10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M24 35V24m0 0-4 4m4-4 4 4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="drop-title">Drop your report here, or choose a file</p>
+        <p class="drop-hint">PDF, JPG or PNG, up to 10 MB</p>
+      </div>
+      <input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg" class="hidden" aria-hidden="true" tabindex="-1">
+
+      <p class="privacy">Your report is deleted from our server after 24 hours, or right away when you press Delete.</p>
+    </div>
+
+    <aside class="upload-sample" aria-label="Example of a result">
+      <p class="sample-title">This is how each result will look</p>
+      <div class="sample-card">
+        <div class="res-head">
+          <div>
+            <h3 class="res-name">Hemoglobin</h3>
+            <p class="res-val"><strong>10.2</strong> g/dL</p>
+          </div>
+          <span class="chip s-low">Low</span>
+        </div>
+        <div id="sampleBar"></div>
+        <p class="res-text">Hemoglobin carries oxygen in your blood. A low value can make you feel tired. Your doctor can find out why.</p>
+      </div>
+      <p class="sample-note">Example only. Not your report.</p>
+    </aside>
+  </section>
+
+  <!-- Step 2: review -->
+  <section id="stepReview" class="review hidden">
+    <h2>Check what we read</h2>
+    <p class="sub">Compare these numbers with your report. If one is wrong, fix the number or remove the row.</p>
+    <div id="reviewNotice" class="callout hidden"></div>
+
+    <div class="rv-table" role="table" aria-label="Values read from your report">
+      <div class="rv-row rv-headrow" role="row">
+        <span role="columnheader">Test</span>
+        <span role="columnheader">Your value</span>
+        <span role="columnheader">Normal range</span>
+        <span role="columnheader">Status</span>
+        <span role="columnheader" class="sr-only">Remove</span>
+      </div>
+      <div id="reviewBody"></div>
+    </div>
+
+    <div class="actions">
+      <button id="confirmBtn" class="btn primary">Explain my report</button>
+      <button id="again1" class="btn ghost">Upload a different file</button>
+    </div>
+  </section>
+
+  <!-- Step 3: results + chat -->
+  <section id="stepResults" class="results hidden">
+    <div class="results-main">
+      <div id="results"></div>
+      <div class="actions end">
+        <button id="again2" class="btn ghost">Start a new report</button>
+        <button id="deleteBtn" class="btn danger">Delete my report data</button>
+      </div>
+    </div>
+
+    <aside class="chat" aria-labelledby="chatTitle">
+      <h2 id="chatTitle">Ask about your report</h2>
+      <p class="sub">Answers use only your report and trusted health notes.</p>
+      <div class="chips" id="chips"></div>
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <form id="askForm" class="ask" autocomplete="off">
+        <label for="question" class="sr-only">Your question</label>
+        <input id="question" placeholder="Type your question" maxlength="500">
+        <button id="sendBtn" class="btn primary" type="submit">Send</button>
+      </form>
+    </aside>
+  </section>
+</main>
+
+<footer class="foot">Final year project. For learning only. Not a substitute for medical advice.</footer>
+
+<script src="/assets/app.js"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import storage
@@ -31,9 +32,12 @@ app.add_middleware(
 )
 
 BASE_DIR = Path(__file__).parent
-STATIC_DIR = BASE_DIR / "static"
+FRONTEND_DIR = BASE_DIR.parent / "frontend"  # the website lives in medreport-explainer/frontend
 UPLOAD_DIR = BASE_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+# serves frontend/style.css and frontend/app.js at /assets/...
+app.mount("/assets", StaticFiles(directory=FRONTEND_DIR), name="assets")
 
 ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg"}
 MAX_FILE_SIZE = 10 * 1024 * 1024
@@ -65,7 +69,7 @@ def load_report(report_id: str) -> dict:
 
 @app.get("/", include_in_schema=False)
 def home():
-    return FileResponse(STATIC_DIR / "index.html")
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 
 @app.get("/health")
